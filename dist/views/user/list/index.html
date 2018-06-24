@@ -1,0 +1,211 @@
+<style>
+.layui-layer-page .layui-layer-content{
+  overflow: initial !important;
+}
+</style>
+<title>用户列表</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>用户列表</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid" id="LAY-app-message">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">用户列表</li>
+        <!-- <li>通知<span class="layui-badge">6</span></li>
+        <li>私信</li> -->
+      </ul>
+      <div class="layui-tab-content">
+      
+        <div class="layui-tab-item layui-show">
+          <div class="LAY-app-users-btns" style="margin-bottom: 10px;">
+            <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="del">删除</button>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="change">修改密码</button>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="auth">分配权限</button>
+          </div>
+          
+          <table id="LAY-app-user-list" lay-filter="LAY-app-user-list"></table>
+        </div>
+      
+       
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+layui.use(['admin', 'table', 'util'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element;
+
+  
+  var DISABLED = 'layui-btn-disabled'
+  var auth=[1,2,4]
+  //区分各选项卡中的表格
+  ,tabs = {
+    all: {
+      text: '用户'
+      ,id: 'LAY-app-user-list'
+    }
+    ,notice: {
+      text: '管理员'
+      ,id: 'LAY-app-message-notice'
+    }
+    ,direct: {
+      text: '私信'
+      ,id: 'LAY-app-message-direct'
+    }
+  };
+  
+  
+  
+  //全部消息
+  table.render({
+    elem: '#LAY-app-user-list'
+    ,url: layui.setter.url+'admin/users/user' //模拟接口
+    ,page: true
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'id', title: 'ID',minWindth:100}
+      ,{field: 'username', title: '用户名',minWindth:100}
+      ,{field: 'auth', title: '角色',minWindth:100,templet:'<div>{{d.auth.name}}</div>'}
+      ,{field:'nickName',title:'微信昵称',minWindth:100}
+      ,{field:'gender',title:'微信性别',templet:'<div>{{ d.gender= d.gender!=null ? ((d.gender==1)?"男":"女"):"" }}</div>',minWindth:100}
+      ,{field:'phone',title:'手机号',minWindth:100}
+      // ,{field:'avatarUrl',title:'微信头像',templet:'<div> <img style="height:100%;" src="{{d.avatarUrl}}"> <div>'}
+      ,{field: 'create_time', title: '创建时间', minWidth: 170, templet: '<div>{{ layui.util.timeAgo(d.create_time)}}</div>'}
+    ]]
+    ,skin: 'line'
+  });
+  
+ 
+  //事件处理
+  var events = {
+    del: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      console.log(data)
+      console.log(checkStatus);
+      layer.confirm('确定删除选中的数据吗？', function(){
+      	$.ajax({
+      		url:layui.setter.url+'admin/users/user',
+      		type:'DELETE',
+      		data:{
+      			data:data
+      		},
+      		success:function(data){
+      			if(data.code==200){
+      				layer.msg('删除成功', {
+		          icon: 1
+		        });
+		        table.reload(thisTabs.id); 
+		    }else{
+      				layer.msg(data.error, {
+		          icon: 2
+		        });
+      			
+      		}
+		    }
+      	})
+       
+      });
+    },
+    change:function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      if(data.length>1) return layer.msg('一次只能修改一个用户的密码');
+         layer.prompt({title: '请输入新密码'}, function(value, index){
+          $.ajax({
+            url:layui.setter.url+'admin/users/user',
+            type:"PUT",
+            data:{
+              id:data[0].id,
+              username:data[0].username,
+              password:value
+            },
+            success:function(data){
+                if(data.code==200){
+                  layer.msg('修改成功！', {
+              icon: 1
+            });
+               layer.close(index); 
+                table.reload('LAY-app-user-list'); 
+                }else{
+                  layer.msg(data.error, {
+              icon: 2
+            });
+                }
+            }
+          })
+      
+      });
+    },
+    auth:function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data;
+      var test;
+        $.ajax({
+          url:layui.setter.url+'admin/auths/getauthlist',
+          async:false,
+          success:function(res){
+              test=res;
+          } 
+        })
+        var str="";
+        test.data.forEach(function(item,index){
+          str+='<option value="'+item.id+'">'+item.name+'</option>';
+
+        },this)
+        var myhtml=`<div class="layui-form layui-form-pane" style="margin:10px;">
+  <div class="layui-form-item">
+              <label class="layui-form-label">分配权限</label>
+              <div class="layui-input-inline">
+                <select class="layui-form-pane" lay-filter="test">${str}</select> 
+                
+              </div>
+  </div>
+</div>`;
+        
+       
+      if(data.length === 0) return layer.msg('未选中行');
+        var index=layer.open({
+          type:1,
+          title:'设置权限',
+          content:myhtml,
+          success:function(){
+           layui.form.render();
+            layui.form.on('select(test)',function(res){
+              layer.close(index);
+               layer.msg('操作成功', {
+              icon: 1
+            });
+            })
+          }
+        })
+    }
+
+    
+  };
+
+  $('.LAY-app-users-btns .layui-btn').on('click', function(){
+    var othis = $(this)
+    ,thisEvent = othis.data('events')
+    ,type = othis.data('type');
+    events[thisEvent] && events[thisEvent].call(this, othis, type);
+  });
+  
+});
+</script>

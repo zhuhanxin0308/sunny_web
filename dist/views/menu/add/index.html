@@ -1,0 +1,145 @@
+
+<title>添加菜单</title>
+  
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">添加菜单</div>
+        <div class="layui-card-body" pad15>
+          
+          <div class="layui-form layui-form-pane" lay-filter="">
+            <div class="layui-form-item">
+              <label class="layui-form-label">菜单名</label>
+              <div class="layui-input-inline">
+                <input type="text" name="title" lay-verify="required" value="" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">此名字用于显示</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">菜单模块名</label>
+              <div class="layui-input-inline">
+                <input type="text" name="name" value="" lay-verify="required" autocomplete="off" placeholder="请输入模块名" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">与对应views下模块</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">菜单图标</label>
+              <div class="layui-input-inline icon">
+                <select id="icon" name="icon" lay-filter="" lay-verify="">
+                  <option value="">无1</option>
+                  <option value="layui-icon-user"><i style="width: 10px;height: 10px;display: block;" class="layui-icon layui-icon-user"></i>user</option>
+                  <option value="layui-icon-rmb"><i class="layui-icon layui-icon-rmb"></i>rmb</option>
+                  <option value="layui-icon-home"><i class="layui-icon layui-icon-home"></i>home</option>
+                  <option value="layui-icon-notice"><i class="layui-icon layui-icon-notice"></i>notice</option>
+                  <option value="layui-icon-voice"><i class="layui-icon layui-icon-voice"></i>voice</option>
+                  <option value="layui-icon-download"><i class="layui-icon layui-icon-download"></i>download</option>
+                  <option value="layui-icon-snowflake"><i class="layui-icon layui-icon-snowflake"></i>snowflake</option>
+                  <option value="layui-icon-website"><i class="layui-icon layui-icon-website"></i>website</option>
+                  <option value="layui-icon-component"><i class="layui-icon layui-icon-component"></i>component</option>
+                  <option value="layui-icon-camera"><i class="layui-icon layui-icon-camera"></i>camera</option>
+                  <option value="layui-icon-note"><i class="layui-icon layui-icon-note"></i>note</option>
+                  <option value="layui-icon-senior"><i class="layui-icon layui-icon-senior"></i>senior</option>
+                  <option value="layui-icon-theme">theme</option>
+
+                </select> 
+              </div>
+              <div class="layui-form-mid layui-word-aux"><i class="layui-icon" id="iconview"></i>仅对最外层菜单有效</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">所属角色</label>
+              <div class="layui-input-inline">
+                <select id="role" name="auth" lay-verify="">
+                 
+                </select> 
+              </div>
+              <div class="layui-form-mid layui-word-aux">谁可以使用此菜单</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">父菜单</label>
+              <div class="layui-input-inline">
+                <select id="parentId" name="parentId" lay-verify="">
+                  <option value="0">无</option>
+                </select> 
+              </div>
+              <div class="layui-form-mid layui-word-aux">默认为最外层菜单</div>
+            </div>
+            
+            <div class="layui-form-item">
+              <label class="layui-form-label">是否显示</label>
+              <div class="layui-input-block">
+                <input type="radio" name="view" value="1" title="是" checked>
+                <input type="radio" name="view" value="0" title="否" >
+              </div>
+            </div>
+           
+            <div class="layui-form-item">
+              <label class="layui-form-label">排序</label>
+              <div class="layui-input-inline">
+                <input type="text" name="orders" value="0" lay-verify="number|required" autocomplete="off" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">同级目录排列顺序，值越小越靠上</div>
+            </div>
+            
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="setmymenu">确认修改</button>
+                
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+layui.use('set', layui.factory('set'));
+layui.use(['jquery','layer'],function(){
+  var $=layui.jquery
+  ,layer=layui.layer;
+  var index=layer.load();
+
+  $.ajax({
+    url:layui.setter.url+'admin/menu/addmenuinfo',
+    type:'POST',
+    success:function(data){
+      if(data.code==200){
+        data.data.role.forEach(function(current,index){
+               $('#role').append('<option value="'+current.id+'">'+current.name+'</option>');
+              
+
+        })
+        data.data.parentId.forEach(function(current,index){
+          $('#parentId').append('<option value="'+current.id+'">'+current.title+'</option>');
+        })
+        
+         layui.form.render();
+         layer.close(index)
+      }else{
+        layer.msg(res.error, {
+          offset: '15px'
+          ,icon: 2
+          ,time: 1000
+        }, function(){
+        
+        });
+      }
+     
+    }
+  });
+
+
+ $('.icon').mouseover(function(e){
+  var str='layui-icon layui-icon-'+$(e.target).text();
+   $('#iconview').attr('class','');
+  $('#iconview').attr('class',str);
+ })
+})
+
+
+
+</script>

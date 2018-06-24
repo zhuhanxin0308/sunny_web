@@ -1,0 +1,178 @@
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md8">
+      <div class="layui-row layui-col-space15">
+        <div class="layui-col-md6">
+          <div class="layui-card">
+            <div class="layui-card-header">快捷方式</div>
+            <div class="layui-card-body">
+              
+              <div class="layui-carousel layadmin-carousel layadmin-shortcut">
+                <div carousel-item id="quick">
+                  
+                  
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        <div class="layui-col-md6">
+          <div class="layui-card">
+            <div class="layui-card-header">全站统计</div>
+            <div class="layui-card-body">
+
+              <div class="layui-carousel layadmin-carousel layadmin-backlog">
+                <div carousel-item id="info">
+                  
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="layui-col-md12">
+          <div class="layui-card">
+            <div class="layui-card-header">数据统计</div>
+            <div class="layui-card-body">
+              
+              <div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-dataview">
+                <div carousel-item id="LAY-index-dataview">
+                  <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
+                  <!-- <div></div>
+                  <div></div> -->
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          <div class="layui-card">
+            <div class="layui-tab layui-tab-brief layadmin-latestData">
+              <ul class="layui-tab-title">
+                <li class="layui-this">最新新闻</li>
+                <li>最新用户</li>
+              </ul>
+              <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                  <table id="LAY-index-topSearch"></table>
+                </div>
+                <div class="layui-tab-item">
+                  <table id="LAY-index-topCard"></table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="layui-col-md4">
+      <div class="layui-card">
+        <div class="layui-card-header">运行环境</div>
+        <div class="layui-card-body layui-text">
+          <table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col>
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>前端框架版本</td>
+                <td>
+                  <script type="text/html" template>
+                    <!-- v{{ layui.admin.v }} -->layui-v{{ layui.v }}
+                    <a href="" target="_blank" style="padding-left: 15px;"></a>
+                  </script>
+                </td>
+              </tr>
+              <tr>
+                <td>后端框架版本</td>
+                <td>
+                 
+                    thinkphp5.1
+                 
+               </td>
+              </tr>
+              <tr>
+                <td>php版本</td>
+                <td id="php_version"></td>
+              </tr>
+              <tr>
+                <td>操作</td>
+                <td style="padding-bottom: 0;">
+                  <div class="layui-btn-container">
+                    <a  class="layui-btn layui-btn-success cache">刷新后台框架缓存</a>
+                   
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="layui-card">
+        <div class="layui-card-header">实时监控</div>
+        <div class="layui-card-body layadmin-takerates">
+          <!-- <div class="layui-progress" lay-filter="cpu" lay-showPercent="yes">
+            <h3>CPU使用率</h3>
+            <div class="layui-progress-bar" lay-percent="58%"></div>
+          </div> -->
+          <div class="layui-progress" lay-filter="memory" lay-showPercent="yes">
+            <h3>磁盘使用率</h3>
+            <div class="layui-progress-bar layui-bg-red" lay-percent="90%"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- <div class="layui-card">
+        <div class="layui-card-header">产品动态</div>
+        <div class="layui-card-body">
+          <div class="layui-carousel layadmin-carousel layadmin-news" data-autoplay="true" data-anim="fade" lay-filter="news">
+            <div carousel-item>
+              <div><a href="http://fly.layui.com/docs/2/" target="_blank" class="layui-bg-red">layuiAdmin 快速上手文档</a></div>
+              <div><a href="javascript:;" onclick="layer.msg('等待添加')" target="_blank" class="layui-bg-green">layuiAdmin 集成心得分享</a></div> 
+              <div><a href="javascript:;" onclick="layer.msg('等待添加')" target="_blank" class="layui-bg-blue">首款 layui 官方后台模板系统正式发布</a></div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- <div class="layui-card">
+        <div class="layui-card-header">
+          作者心语
+          <i class="layui-icon layui-icon-tips" lay-tips="要支持的噢" lay-offset="5"></i>
+        </div>
+        <div class="layui-card-body layui-text layadmin-text">
+          <p>一直以来，layui 秉承无偿开源的初心，虔诚致力于服务各层次前后端 Web 开发者，在商业横飞的当今时代，这一信念从未动摇。即便身单力薄，仍然重拾决心，埋头造轮，以尽可能地填补产品本身的缺口。</p>
+          <p>在过去的一段的时间，我一直在寻求持久之道，已维持你眼前所见的一切。而 layuiAdmin 是我们尝试解决的手段之一。我相信真正有爱于 layui 生态的你，定然不会错过这一拥抱吧。</p>
+          <p>子曰：君子不用防，小人防不住。请务必通过官网正规渠道，获得 <a href="http://www.layui.com/admin/" target="_blank">layuiAdmin</a>！</p>
+          <p>—— 贤心（<a href="http://www.layui.com/" target="_blank">layui.com</a>）</p>
+        </div>
+      </div> -->
+    </div>
+    
+  </div>
+</div>
+
+
+<script>
+//加载 controller 目录下的对应模块
+/*
+
+  小贴士：
+    这里 console 模块对应 的 console.js 并不会重复加载，
+    然而该页面的视图则是重新插入到容器，那如何保证能重新来控制视图？有两种方式：
+      1): 借助 layui.factory 方法获取 console 模块的工厂（回调函数）给 layui.use
+      2): 直接在 layui.use 方法的回调中书写业务代码，即:
+          layui.use('console', function(){ 
+            //同 console.js 中的 layui.define 回调中的代码 
+          });
+          
+  这里我们采用的是方式1。其它很多视图中采用的其实都是方式2，因为更简单些，也减少了一个请求数。
+  
+*/
+layui.use('console', layui.factory('console'));
+</script>
+

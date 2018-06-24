@@ -1,0 +1,83 @@
+
+<title>设置我的资料</title>
+  
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">设置我的资料</div>
+        <div class="layui-card-body" pad15>
+          
+          <div class="layui-form admininfo" lay-filter="">
+            
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+layui.use('jquery',function(){
+  var $=layui.jquery;
+  $.ajax({
+    url:layui.setter.url+'admin/admin/info',  
+    type:'GET',
+    success:function(res){
+      console.log(res)
+        $('.admininfo').append(`<div class="layui-form-item">
+              <label class="layui-form-label">我的角色</label>
+             
+              <div class="layui-input-inline">
+                <input type="text"  value="超级管理员" readonly class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">当前角色不可更改为其它角色</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">用户名</label>
+              <div class="layui-input-inline">
+                <input type="text"  value="`+res.data.username+`" readonly class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">不可修改。一般用于后台登入名</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">昵称</label>
+              <div class="layui-input-inline">
+                <input type="text" name="nickName" value="`+res.data.nickName+`" lay-verify="nickname" autocomplete="off" placeholder="请输入昵称" class="layui-input">
+              </div>
+            </div>
+           
+          
+            <div class="layui-form-item">
+              <label class="layui-form-label">手机</label>
+              <div class="layui-input-inline">
+                <input type="text" name="phone" value="`+res.data.phone+`" lay-verify="phone" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">邮箱</label>
+              <div class="layui-input-inline">
+                <input type="text" name="email" value="`+res.data.email+`" lay-verify="email" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+              <label class="layui-form-label">备注</label>
+              <div class="layui-input-block">
+                <textarea name="info" placeholder="请输入内容" class="layui-textarea">`+res.data.info+`</textarea>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
+               
+              </div>
+            </div>`);
+        layui.form.render();
+
+    }
+  })
+  
+})
+layui.use('set', layui.factory('set'));
+</script>

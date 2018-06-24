@@ -1,0 +1,75 @@
+
+
+<title>邮件服务</title>
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">邮件服务</div>
+        <div class="layui-card-body ">
+          
+          <div class="layui-form email" wid100 lay-filter="">
+          
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+layui.use('jquery',function(){
+  var $=layui.jquery;
+  var index=layer.load()
+  $.ajax({
+    url:layui.setter.url+'admin/web/email',  
+    type:'GET',
+    success:function(res){
+      console.log(res)
+        $('.email').append(`  <div class="layui-form-item">
+              <label class="layui-form-label">SMTP服务器</label>
+              <div class="layui-input-inline">
+                <input type="text" name="smtp_server" value="`+res.data.smtp_server+`" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">如：smtp.163.com</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">SMTP端口号</label>
+              <div class="layui-input-inline" style="width: 80px;">
+                <input type="text" name="port" lay-verify="number" value="`+res.data.port+`" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">一般为 25 或 465</div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">发件人邮箱</label>
+              <div class="layui-input-inline">
+                <input type="text" name="send_email" value="`+res.data.send_email+`" lay-verify="email" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">发件人昵称</label>
+              <div class="layui-input-inline">
+                <input type="text" name="send_nickname" value="`+res.data.send_nickname+`" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">邮箱登入密码</label>
+              <div class="layui-input-inline">
+                <input type="password" name="send_password" value="`+res.data.send_password+`" autocomplete="off" class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="setemail">确认保存</button>
+              </div>
+            </div>>`);
+        
+        layui.form.render();
+        layer.close(index)
+    }
+  })
+  
+})
+layui.use('set', layui.factory('set'));
+</script>

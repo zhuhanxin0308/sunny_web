@@ -1,0 +1,186 @@
+
+<title>角色管理</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>角色管理</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid" id="LAY-app-message">
+  <div class="layui-card">
+    <div class="layui-tab layui-tab-brief">
+      <ul class="layui-tab-title">
+        <li class="layui-this">角色管理</li>
+        <!-- <li>通知<span class="layui-badge">6</span></li>
+        <li>私信</li> -->
+      </ul>
+      <div class="layui-tab-content">
+      
+        <div class="layui-tab-item layui-show">
+          <div class="LAY-app-message-btns" style="margin-bottom: 10px;">
+            
+            <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="add" >添加角色</button>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="edit">编辑角色</button>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" data-type="all" data-events="del">删除</button>
+          </div>
+          
+          <table id="LAY-app-menu-list" lay-filter="LAY-app-menu-list"></table>
+        </div>
+      
+       
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+layui.use(['admin', 'table', 'util'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,table = layui.table
+  ,element = layui.element;
+  
+  var DISABLED = 'layui-btn-disabled'
+  
+
+  //区分各选项卡中的表格
+  ,tabs = {
+    all: {
+      text: '全部菜单'
+      ,id: 'LAY-app-menu-list'
+    }
+    ,notice: {
+      text: '通知'
+      ,id: 'LAY-app-message-notice'
+    }
+    ,direct: {
+      text: '私信'
+      ,id: 'LAY-app-message-direct'
+    }
+  };
+  
+  
+  //全部消息
+  table.render({
+
+    elem: '#LAY-app-menu-list'
+    ,url: layui.setter.url+'admin/auths/auth' 
+    
+    ,page: true
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'}
+      ,{field: 'id', title: '角色ID',minWindth:100}
+      ,{field: 'name', title: '角色名',minWindth:100}
+      ,{field: 'create_time', title: '创建时间', minWidth: 170, templet: '<div>{{ layui.util.timeAgo(d.create_time) }}</div>'}
+    ]]
+    ,skin: 'line'
+  });
+  
+
+  //事件处理
+  var events = {
+    del: function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      console.log(data)
+      console.log(thisTabs.id)
+      
+      console.log(checkStatus);
+      layer.confirm('确定删除选中的数据吗？', function(){
+      	$.ajax({
+      		url:layui.setter.url+'admin/auths/auth',
+      		type:'DELETE',
+      		data:{
+      			data:data
+      		},
+      		success:function(data){
+      			if(data.code==200){
+      				layer.msg('删除成功！', {
+		          icon: 1
+		        });
+		        table.reload(thisTabs.id); 
+		    }else{
+		    	
+      				layer.msg(data.error, {
+		          icon: 2
+		        });
+      			
+      		}
+		    }
+      	})
+       
+      });
+    },
+    add:function(){
+         layer.prompt({title: '请输入角色名'}, function(value, index){
+          $.ajax({
+            url:layui.setter.url+'admin/auths/auth',
+            type:"POST",
+            data:{
+              name:value
+            },
+            success:function(data){
+                if(data.code==200){
+                  layer.msg('添加成功！', {
+              icon: 1
+            });
+               layer.close(index); 
+                table.reload('LAY-app-menu-list'); 
+                }else{
+                  layer.msg(data.error, {
+              icon: 2
+            });
+                }
+            }
+          })
+      
+      });
+    },
+    edit:function(othis, type){
+      var thisTabs = tabs[type]
+      ,checkStatus = table.checkStatus(thisTabs.id)
+      ,data = checkStatus.data; //获得选中的数据
+      if(data.length === 0) return layer.msg('未选中行');
+      if(data.length>1) return layer.msg('一次只能编辑一行');
+         layer.prompt({title: '编辑角色名',value:data[0].name}, function(value, index){
+          $.ajax({
+            url:layui.setter.url+'admin/auths/auth',
+            type:"PUT",
+            data:{
+              id:data[0].id,
+              name:value
+            },
+            success:function(data){
+                if(data.code==200){
+                  layer.msg('编辑成功！', {
+              icon: 1
+            });
+               layer.close(index); 
+                table.reload('LAY-app-menu-list'); 
+                }else{
+                  layer.msg(data.error, {
+              icon: 2
+            });
+                }
+            }
+          })
+      
+      });
+    }
+    
+    
+  };
+  
+  $('.LAY-app-message-btns .layui-btn').on('click', function(){
+    var othis = $(this)
+    ,thisEvent = othis.data('events')
+    ,type = othis.data('type');
+    events[thisEvent] && events[thisEvent].call(this, othis, type);
+  });
+});
+</script>

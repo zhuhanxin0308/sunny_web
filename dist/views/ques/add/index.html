@@ -1,0 +1,126 @@
+
+<title>添加题目</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>题目管理</cite></a>
+   
+    <a><cite>添加题目</cite></a>
+  </div>
+</div>
+
+
+
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    
+   <div class="layui-card">
+        <div class="layui-card-header">添加题目</div>
+        <div class="layui-card-body">
+          <form class="layui-form" lay-filter="component-form-element">
+            <div class="layui-row layui-col-space10 layui-form-item">
+              <div class="layui-col-lg6">
+                <label class="layui-form-label">题目</label>
+                <div class="layui-input-block">
+                  <input type="text" name="ques" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-col-lg6">
+                <label class="layui-form-label">选项A</label>
+                <div class="layui-input-block">
+                  <input type="text" name="select_a" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-col-lg6">
+                <label class="layui-form-label">选项B</label>
+                <div class="layui-input-block">
+                  <input type="text" name="select_b" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-col-lg6">
+                <label class="layui-form-label">选项C</label>
+                <div class="layui-input-block">
+                  <input type="text" name="select_c" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-col-lg6">
+                <label class="layui-form-label">选项D</label>
+                <div class="layui-input-block">
+                  <input type="text" name="select_d" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+            
+ 
+    
+     
+          
+		         <div class="layui-form-item">
+              
+                <label class="layui-form-label">正确答案：</label>
+                <div class="layui-input-inline">
+                  <select name="ans" lay-verify="required" lay-filter="aihao">
+                   
+                    <option value="A" selected>A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    
+                  </select>
+                </div>
+             
+            </div>
+           
+           
+            
+            
+            
+            
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="component-form-element">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+ </div>
+  </div>
+</div>
+
+<script>
+layui.use(['admin','upload','form'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,element = layui.element
+  ,form = layui.form
+  ,upload=layui.upload;
+  form.verify({
+    video: function(value){
+      if(value.length < 5){
+        return '没有上传视频';
+      }
+    }
+  });
+  form.render();
+  //form.render(null, 'component-form-element');
+  element.render('breadcrumb', 'breadcrumb');
+  
+  form.on('submit(component-form-element)', function(data){
+    
+    $.ajax({
+      url:'http://localhost/admin/public/admin/index/addtimu',
+      type:'POST',
+      data:data.field,
+      success:function(res){
+        layer.msg(res.msg);
+      }
+    })
+    return false;
+  });
+
+
+});
+</script>
