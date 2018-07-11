@@ -24,6 +24,9 @@
   $.ajax({
     url:layui.setter.url+'admin/web/web',  
     type:'GET',
+	xhrFields: {
+           withCredentials: true
+       },
     success:function(res){
       console.log(res)
         $('.site').append(`<div class="layui-form-item">

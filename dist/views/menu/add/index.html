@@ -106,6 +106,9 @@ layui.use(['jquery','layer'],function(){
   $.ajax({
     url:layui.setter.url+'admin/menu/addmenuinfo',
     type:'POST',
+	xhrFields: {
+           withCredentials: true
+       },
     success:function(data){
       if(data.code==200){
         data.data.role.forEach(function(current,index){

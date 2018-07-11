@@ -71,6 +71,10 @@ layui.use(['admin', 'form', 'user'], function(){
     admin.req({
       url: layui.setter.url+'admin/login/login' 
       ,data:obj.field
+      , crossDomain: true
+      ,xhrFields: {
+                    withCredentials: true
+                }
       ,type:'POST'
       ,success: function(res){
       
@@ -85,7 +89,7 @@ layui.use(['admin', 'form', 'user'], function(){
         });
         }else{
           //登入成功的提示与跳转
-        layer.msg(res.error, {
+        layer.msg(res.msg, {
           offset: '15px'
           ,icon: 2
           ,time: 1000

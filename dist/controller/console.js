@@ -12,6 +12,9 @@
                 e.ajax({
                     url:layui.setter.url+'admin/index/clear',
                     type:'post',
+		    xhrFields: {
+          		 withCredentials: true
+      		     },
                     success:function(res){
                         if(res.code==200){
                             layer.msg(res.msg, {
@@ -30,6 +33,9 @@
           e.ajax({
         url:layui.setter.url+"admin/index/main",
         type:"POST",
+	xhrFields: {
+           withCredentials: true
+       },
         async:false,
         success:function(res){
         	//构造快捷方式dom
@@ -40,7 +46,7 @@
         			current.icon="layui-icon-set";
         		}
         		if(current.pparent){
-        			current.name=current.pparent.name+'/'+current.parent.name+'/'+current.name+'/';
+        			current.name=current.pparent.name+'/'+current.parent.name+'/'+current.name;
         		}else{
         			current.name=current.parent.name+'/'+current.name+'/';
         		}
@@ -85,6 +91,9 @@
            e.ajax({
         url:layui.setter.url+"admin/index/tongji",
         type:"POST",
+	xhrFields: {
+           withCredentials: true
+       },
         async:false,
         success:function(res){
             //构造快捷方式dom
@@ -134,6 +143,9 @@
          e.ajax({
             url:layui.setter.url+'admin/index/testdata',
             async:false,
+		xhrFields: {
+           withCredentials: true
+       },
             success:function(res){
 
                 chartdata=res.data;
@@ -284,6 +296,9 @@
             e.ajax({
                 url:layui.setter.url+"admin/index/memory",
                 type:"POST",
+		xhrFields: {
+           withCredentials: true
+       },
                 success:function(data){
                     
                     a.progress('memory', (100-data.data.memory)+'%')

@@ -10,6 +10,9 @@
         i.req({
             url: layui.setter.url+"admin/index/loginout",
             type: "get",
+		xhrFields: {
+           withCredentials: true
+       },
             data: {},
             done: function(e) {
                 i.exit()

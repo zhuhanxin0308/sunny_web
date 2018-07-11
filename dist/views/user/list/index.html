@@ -98,8 +98,11 @@ layui.use(['admin', 'table', 'util'], function(){
       console.log(checkStatus);
       layer.confirm('确定删除选中的数据吗？', function(){
       	$.ajax({
-      		url:layui.setter.url+'admin/users/user',
-      		type:'DELETE',
+      		url:layui.setter.url+'admin/users/userdel',
+      		type:'POST',
+		xhrFields: {
+           withCredentials: true
+       },
       		data:{
       			data:data
       		},
@@ -128,8 +131,11 @@ layui.use(['admin', 'table', 'util'], function(){
       if(data.length>1) return layer.msg('一次只能修改一个用户的密码');
          layer.prompt({title: '请输入新密码'}, function(value, index){
           $.ajax({
-            url:layui.setter.url+'admin/users/user',
-            type:"PUT",
+            url:layui.setter.url+'admin/users/useredit',
+            type:"POST",
+		xhrFields: {
+           withCredentials: true
+       },
             data:{
               id:data[0].id,
               username:data[0].username,
@@ -156,24 +162,36 @@ layui.use(['admin', 'table', 'util'], function(){
       var thisTabs = tabs[type]
       ,checkStatus = table.checkStatus(thisTabs.id)
       ,data = checkStatus.data;
+      if(data.length === 0) return layer.msg('未选中行');
+      if(data.length>1) return layer.msg('一次只能修改一个用户');
+      console.log(data)
       var test;
         $.ajax({
           url:layui.setter.url+'admin/auths/getauthlist',
           async:false,
+	xhrFields: {
+           withCredentials: true
+       },
           success:function(res){
               test=res;
           } 
         })
         var str="";
         test.data.forEach(function(item,index){
-          str+='<option value="'+item.id+'">'+item.name+'</option>';
+          if(item.name==data[0].auth.name){
+
+          }else{
+            str+='<option value="'+item.id+'">'+item.name+'</option>';
+          }
+          
 
         },this)
         var myhtml=`<div class="layui-form layui-form-pane" style="margin:10px;">
   <div class="layui-form-item">
               <label class="layui-form-label">分配权限</label>
               <div class="layui-input-inline">
-                <select class="layui-form-pane" lay-filter="test">${str}</select> 
+                
+                <select class="layui-form-pane" lay-filter="test"><option value="不改变">不改变</option>${str}</select> 
                 
               </div>
   </div>
@@ -188,10 +206,33 @@ layui.use(['admin', 'table', 'util'], function(){
           success:function(){
            layui.form.render();
             layui.form.on('select(test)',function(res){
-              layer.close(index);
-               layer.msg('操作成功', {
-              icon: 1
-            });
+             
+              $.ajax({
+                url:layui.setter.url+'admin/users/userauth',
+                type:'POST',
+                xhrFields: {
+           withCredentials: true
+       },
+                data:{
+                  role:res.value,
+                  id:data[0].id
+                },
+                success:function(res){
+                    if(res.code==200){
+                      layer.close(index);
+                          layer.msg('操作成功', {
+                          icon: 1
+                        });
+                        table.reload('LAY-app-user-list');
+                    }else{
+                      layer.close(index);
+                        layer.msg('操作失败', {
+                        icon: 2
+                      });
+                    }
+                }
+              })
+              
             })
           }
         })

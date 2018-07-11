@@ -24,6 +24,9 @@
         i.ajax({
             url:layui.setter.url+'admin/web/web',
             type:'PUT',
+	xhrFields: {
+           withCredentials: true
+       },
             data:t.field,
             success:function(res){
                 if(res.code==200){
@@ -54,6 +57,9 @@
         i.ajax({
             url:layui.setter.url+'admin/web/email',
             type:'PUT',
+	    xhrFields:{
+          	 withCredentials: true
+      	     },
             data:t.field,
             success:function(res){
                 if(res.code==200){
@@ -82,6 +88,9 @@
         i.ajax({
             url:layui.setter.url+'admin/admin/info',
             type:'PUT',
+		xhrFields: {
+           withCredentials: true
+       },
             data:t.field,
             success:function(res){
                     if(res.code==200){
@@ -109,6 +118,9 @@
     	i.ajax({
     		url:layui.setter.url+'admin/menu/addmenu',
     		type:'POST',
+			xhrFields: {
+           withCredentials: true
+       },
     		data:t.field,
     		success:function(data){
     			if(data.code==200){
@@ -163,6 +175,9 @@
         i.ajax({
             url:layui.setter.url+'admin/admin/password',
             type:'PUT',
+		xhrFields: {
+           withCredentials: true
+       },
             data:t.field,
             success:function(res){
                 if(res.code==200){

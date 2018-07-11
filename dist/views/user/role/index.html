@@ -93,8 +93,11 @@ layui.use(['admin', 'table', 'util'], function(){
       console.log(checkStatus);
       layer.confirm('确定删除选中的数据吗？', function(){
       	$.ajax({
-      		url:layui.setter.url+'admin/auths/auth',
-      		type:'DELETE',
+      		url:layui.setter.url+'admin/auths/authdel',
+      		type:'POST',
+		xhrFields: {
+           withCredentials: true
+       },
       		data:{
       			data:data
       		},
@@ -121,6 +124,9 @@ layui.use(['admin', 'table', 'util'], function(){
           $.ajax({
             url:layui.setter.url+'admin/auths/auth',
             type:"POST",
+		xhrFields: {
+           withCredentials: true
+       },
             data:{
               name:value
             },
@@ -149,8 +155,11 @@ layui.use(['admin', 'table', 'util'], function(){
       if(data.length>1) return layer.msg('一次只能编辑一行');
          layer.prompt({title: '编辑角色名',value:data[0].name}, function(value, index){
           $.ajax({
-            url:layui.setter.url+'admin/auths/auth',
-            type:"PUT",
+            url:layui.setter.url+'admin/auths/authedit',
+            type:'POST',
+		xhrFields: {
+           withCredentials: true
+       },
             data:{
               id:data[0].id,
               name:value

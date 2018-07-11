@@ -92,6 +92,9 @@ layui.use(['admin', 'table', 'util'], function(){
       	$.ajax({
       		url:layui.setter.url+'admin/menu/menudel',
       		type:'POST',
+		xhrFields: {
+           withCredentials: true
+       },
       		data:{
       			data:data
       		},

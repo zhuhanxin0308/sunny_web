@@ -25,6 +25,9 @@ layui.use('jquery',function(){
   $.ajax({
     url:layui.setter.url+'admin/web/email',  
     type:'GET',
+	xhrFields: {
+           withCredentials: true
+       },
     success:function(res){
       console.log(res)
         $('.email').append(`  <div class="layui-form-item">
