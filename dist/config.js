@@ -18,7 +18,7 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
     ,tableName: 'sunny' //本地存储表名
     ,MOD_NAME: 'admin' //模块事件名
     
-    ,debug: true //是否开启调试模式。如开启，接口异常时会抛出异常 URL 等信息
+    ,debug: true  //是否开启调试模式。如开启，接口异常时会抛出异常 URL 等信息
     
     ,interceptor: false //是否开启未登入拦截
     
