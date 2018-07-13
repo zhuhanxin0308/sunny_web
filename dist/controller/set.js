@@ -23,7 +23,7 @@
     a.on("submit(set_website)", function(t) {
         i.ajax({
             url:layui.setter.url+'admin/web/web',
-            type:'PUT',
+            type:'POST',
 	xhrFields: {
            withCredentials: true
        },
@@ -56,7 +56,7 @@
    
         i.ajax({
             url:layui.setter.url+'admin/web/email',
-            type:'PUT',
+            type:'POST',
 	    xhrFields:{
           	 withCredentials: true
       	     },
@@ -87,7 +87,7 @@
         console.log(t)
         i.ajax({
             url:layui.setter.url+'admin/admin/info',
-            type:'PUT',
+            type:'POST',
 		xhrFields: {
            withCredentials: true
        },
@@ -174,7 +174,7 @@
     a.on("submit(setmypass)", function(t) {
         i.ajax({
             url:layui.setter.url+'admin/admin/password',
-            type:'PUT',
+            type:'POST',
 		xhrFields: {
            withCredentials: true
        },
