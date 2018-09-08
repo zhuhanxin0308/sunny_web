@@ -1,0 +1,128 @@
+<title>用户日志</title>
+  
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>日治管理</cite></a>
+    <a><cite>用户日志</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+	<div class="layui-row layui-col-space15">
+	<div class="layui-col-sm12">
+      <div class="layui-card">
+        <div class="layui-card-header">日志分析</div>
+        <div class="layui-card-body">
+          
+          <div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-plat">
+            <div carousel-item id="LAY-index-plat">
+              <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+	<div class="layui-col-sm12">
+		  <div class="layui-card">
+		    <div class=" layui-card-header layuiadmin-card-header-auto" lay-filter="app-content-user">
+		     <p>日志详细数据</p>
+		    </div>
+		    <div class="layui-card-body">
+		      <div style="padding-bottom: 10px;">
+		        <button class="layui-btn layuiadmin-btn-comm" data-type="batchdel">删除</button>
+		        <button class="layui-btn layui-btn-danger layuiadmin-btn-comm" data-type="des">清空日志</button>
+
+		      </div>
+		      <table id="LAY-app-user-comm" lay-filter="LAY-app-user-comm"></table>  
+		      <script type="text/html" id="table-content-user">
+		        
+		        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+		      </script>
+		    </div>
+		  </div>
+	  </div>
+	</div>
+</div>
+
+
+<script>
+layui.use('contlist', layui.factory('contlist')).use(['admin', 'contlist', 'table'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,view = layui.view
+  ,table = layui.table
+  ,form = layui.form;
+  
+  form.render(null, 'app-content-user');
+  
+ 
+  
+  //点击事件
+  var active = {
+    batchdel: function(){
+      var checkStatus = table.checkStatus('LAY-app-user-comm')
+      ,checkData = checkStatus.data; //得到选中的数据
+
+      if(checkData.length === 0){
+        return layer.msg('请选择数据');
+      }
+    
+      layer.confirm('确定删除吗？', function(index) {
+         var arr=[]
+          checkData.forEach(item=>{
+            arr.push(item.id)
+          })
+
+         $.ajax({
+          url:layui.setter.url+"admin/logs/blogdel",
+          type:'post',
+           xhrFields: {
+           withCredentials: true
+       },
+          data:{
+            id:arr
+          },
+          success:function(res){
+           layer.msg(res.msg)
+          }
+         })
+        //执行 Ajax 后重载
+        /*
+        admin.req({
+          url: 'xxx'
+          //,……
+        });
+        */
+        table.reload('LAY-app-user-comm');
+        
+      });
+    },
+    des:function(){
+    	layer.confirm('确定要清空日志吗？', function(index){
+    		$.ajax({
+    			url:layui.setter.url+'admin/logs/blogempty',
+    			type:'post',
+           xhrFields: {
+           withCredentials: true
+       },
+    			success:function(res){
+    				layer.msg(res.msg)
+    				table.reload('LAY-app-user-comm');
+        			layer.msg('已经清空了');
+    			}
+    		})
+    	})
+    }
+  }  
+
+  $('.layui-btn.layuiadmin-btn-comm').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+});
+</script>
+<script>
+layui.use('senior', layui.factory('senior'));
+</script>

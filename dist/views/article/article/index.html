@@ -1,0 +1,223 @@
+
+
+  <title>文章列表</title>
+  
+  <div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+      <a lay-href="">主页</a>
+      <a><cite>内容管理</cite></a>
+      <a><cite>文章列表</cite></a>
+    </div>
+  </div>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-form layui-card-header layuiadmin-card-header-auto" style="height:auto;padding-top: 10px;" lay-filter="app-content-list">
+        <div class="layui-form-item" >
+          <div class="layui-inline">
+            <label class="layui-form-label">关键词</label>
+            <div class="layui-input-inline">
+              <input type="text" name="keyword" placeholder="请输入关键词" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+         
+  
+          <div class="layui-inline">
+            <label class="layui-form-label">分类</label>
+            <div class="layui-input-inline">
+              <select name="cate" id="cate">
+                <option value="0">所有分类</option>
+               
+              </select>
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">状态</label>
+            <div class="layui-input-inline">
+              <select name="status">
+                <option value="1" selected>已发布</option>
+               <option value="0">未发布</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="layui-inline">
+            <button class="layui-btn layuiadmin-btn-list" style="width: 58px;" lay-submit lay-filter="LAY-app-contlist-search">
+              <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-card-body">
+        <div style="padding-bottom: 10px;">
+          <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">删除</button>
+          <button class="layui-btn layuiadmin-btn-list" data-type="add">添加</button>
+        </div>
+        <table id="LAY-app-content-list" lay-filter="LAY-app-content-list"></table> 
+        <script type="text/html" id="buttonTpl">
+          {{#  if(d.status){ }}
+            <button class="layui-btn layui-btn-xs">已发布</button>
+          {{#  } else { }}
+            <button class="layui-btn layui-btn-primary layui-btn-xs">待修改</button>
+          {{#  } }}
+        </script>
+        <script type="text/html" id="table-content-list">
+          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        </script>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  layui.use('contlist', layui.factory('contlist')).use(['admin','layedit', 'contlist', 'table'], function(){
+    var $ = layui.$
+    ,admin = layui.admin
+    ,view = layui.view
+    ,table = layui.table
+    ,form = layui.form
+    ,layedit=layui.layedit;
+    var catelist="";
+    var index=layer.load()
+    var edit1,edit2;
+     //渲染分类
+        $.ajax({
+        url:layui.setter.url+'admin/post/cate',
+        type:'POST',
+         xhrFields: {
+           withCredentials: true
+       },
+        success:function(res){
+            var str=``;
+            
+            if(res.length>0){
+                res.forEach(item => {
+                    str+=`<option value="${item.id}">${item.name}</option>`
+                });
+                catelist=str
+                $('#cate').append(str)
+               form.render() 
+               layer.close(index)
+            }
+        }
+    })
+    form.render(null, 'app-content-list');
+
+    
+    //监听搜索
+    form.on('submit(LAY-app-contlist-search)', function(data){
+      
+      
+      //执行重载
+      table.reload('LAY-app-content-list', {
+        url:layui.setter.url+'admin/post/search',
+        page:true,
+        where: {
+          keyword:data.field.keyword,
+          cate:data.field.cate,
+          status:data.field.status
+        }
+      });
+    });
+    
+    var active = {
+      batchdel: function(){
+        var checkStatus = table.checkStatus('LAY-app-content-list')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择数据');
+        }
+      
+        layer.confirm('确定删除吗？', function(index) {
+         
+          var arr=[]
+          checkData.forEach(item=>{
+            arr.push(item.id)
+          })
+         $.ajax({
+          url:layui.setter.url+"admin/post/postdel",
+          type:'post',
+           xhrFields: {
+           withCredentials: true
+       },
+          data:{
+            id:arr
+          },
+          success:function(res){
+           layer.msg(res.msg)
+          }
+         })
+          //执行 Ajax 后重载
+          /*
+  
+          admin.req({
+            url: 'xxx'
+            //,……
+          });
+          */
+          table.reload('LAY-app-content-list');
+          layer.close(index);
+        });
+      }
+      
+      //添加
+      ,add: function(othis){
+        admin.popup({
+          title: '添加文章'
+          ,area: ['550px', '550px']
+          ,id: 'LAY-popup-content-add'
+          ,success: function(layero, index){
+            view(this.id).render('article/article/listform').done(function(){
+                   layedit.set({
+                uploadImage: {
+                  url: layui.setter.url+'admin/post/upload_img' //接口url
+                  ,type: 'POST' //默认post
+                }
+              });
+                  edit1 =layedit.build('edit');
+                  $('#cates').append(catelist)
+              form.render(null, 'layuiadmin-app-form-list');
+              
+              //监听提交
+              form.on('submit(layuiadmin-app-form-submit)', function(data){
+                var field = data.field; //获取提交的字段
+                
+                data.field.status=data.field.status=="on"?1:0;
+               
+                var content=layedit.getContent(edit1)
+                if(content==""){
+                  layer.msg('正文内容不能为空')
+                }
+                data.field.content=content;
+
+               $.ajax({
+            url:layui.setter.url+'admin/post/save',
+            type:'POST',
+             xhrFields: {
+           withCredentials: true
+       },
+            data:data.field,
+            success:function(res){
+              layer.msg(res.msg)
+              }
+          })
+                //提交 Ajax 成功后，关闭当前弹层并重载表格
+                //$.ajax({});
+                layui.table.reload('LAY-app-content-list'); //重载表格
+                layer.close(index); //执行关闭 
+              });
+            });
+          }
+        });
+      }
+    }; 
+
+    $('.layui-btn.layuiadmin-btn-list').on('click', function(){
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+  });
+  </script>

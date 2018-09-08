@@ -12,9 +12,9 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
     ,entry: 'index' //默认视图文件名
     ,engine: '.html' //视图文件后缀名
     ,pageTabs: false //是否开启页面选项卡功能
-    ,url:'http://localhost/test/public/' //后台接口的地址 到public/目录，如果你的域名直接指向public目录，则直接填域名/（需要加斜杠）
-    ,website:'http://www.example.com' //前台地址（区别于后台前端地址）
-    ,name: 'sunny 后台管理系统开发框架'
+    ,url:'http://mymyjd.cn/new/public/' //后台接口的地址 到public/目录，如果你的域名直接指向public目录，则直接填域名/（需要加斜杠）
+    ,website:'http://blog.mymyjd.cn/' //前台地址（区别于后台前端地址）
+    ,name: 'sunny 后台管理系统'
     ,tableName: 'sunny' //本地存储表名
     ,MOD_NAME: 'admin' //模块事件名
     

@@ -204,6 +204,7 @@ layui.use(['admin', 'table', 'util'], function(){
           title:'设置权限',
           content:myhtml,
           success:function(){
+
            layui.form.render();
             layui.form.on('select(test)',function(res){
              
@@ -247,6 +248,6 @@ layui.use(['admin', 'table', 'util'], function(){
     ,type = othis.data('type');
     events[thisEvent] && events[thisEvent].call(this, othis, type);
   });
-  
+
 });
 </script>

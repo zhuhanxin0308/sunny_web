@@ -1,0 +1,156 @@
+
+
+  <title>回收站</title>
+  
+  <div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+      <a lay-href="">主页</a>
+      <a><cite>内容管理</cite></a>
+      <a><cite>回收站</cite></a>
+    </div>
+  </div>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class=" layui-card-header layuiadmin-card-header-auto" style="height:auto;padding-top: 10px;" >
+        <p class="layui-danger">清空回收站操作将清空回收咱全部文章，并且无法还原，请谨慎使用！，回收站的文章可以还原，如果还原的文章分类已经不存在，将还原为默认分类！</p>
+          
+
+         
+        
+      </div>
+
+      <div class="layui-card-body">
+        <div style="padding-bottom: 10px;">
+          <button class="layui-btn layuiadmin-btn-list" data-type="batchdel">批量删除</button>
+          <button class="layui-btn layuiadmin-btn-list" data-type="dels">批量还原</button>
+          <button class="layui-btn layui-btn-danger layuiadmin-btn-list" data-type="emp">清空回收站</button>
+        </div>
+        <table id="LAY-app-recly-list" lay-filter="LAY-app-recly-list"></table> 
+       
+        <script type="text/html" id="table-recly-list">
+          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="back"><i class="layui-icon layui-icon-edit"></i>还原</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        </script>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  layui.use('contlist', layui.factory('contlist')).use(['admin','layedit', 'contlist', 'table'], function(){
+    var $ = layui.$
+    ,admin = layui.admin
+    ,view = layui.view
+    ,table = layui.table
+    ,form = layui.form
+    ,layedit=layui.layedit;
+    var catelist="";
+  
+    var edit1,edit2;
+     
+    form.render(null, 'app-recly-list');
+
+    
+   
+    
+    var active = {
+      batchdel: function(){
+        var checkStatus = table.checkStatus('LAY-app-recly-list')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择数据');
+        }
+      
+        layer.confirm('确定删除吗？', function(index) {
+         
+          var arr=[]
+          checkData.forEach(item=>{
+            arr.push(item.id)
+          })
+         $.ajax({
+          url:layui.setter.url+"admin/post/reclydel",
+          type:'post',
+           xhrFields: {
+           withCredentials: true
+       },
+          data:{
+            id:arr
+          },
+          success:function(res){
+           layer.msg(res.msg)
+          }
+         })
+          //执行 Ajax 后重载
+          /*
+  
+          admin.req({
+            url: 'xxx'
+            //,……
+          });
+          */
+          table.reload('LAY-app-recly-list');
+          layer.close(index);
+        });
+      }
+      
+      //添加
+      ,dels:  function(){
+        var checkStatus = table.checkStatus('LAY-app-recly-list')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择数据');
+        }
+      
+        layer.confirm('确定要恢复吗？，分类不存在的文章将会还原到默认分类', function(index) {
+         
+          var arr=[]
+          checkData.forEach(item=>{
+            arr.push(item.id)
+          })
+         $.ajax({
+          url:layui.setter.url+"admin/post/getback",
+          type:'post',
+           xhrFields: {
+           withCredentials: true
+       },
+          data:{
+            id:arr
+          },
+          success:function(res){
+           layer.msg(res.msg)
+          }
+         })
+
+          table.reload('LAY-app-recly-list');
+          layer.close(index);
+        });
+      },
+      emp:function(){
+      	 layer.confirm('确定要清空回收站吗？清空后数据将无法还原！', function(index){
+      	 	$.ajax({
+          url:layui.setter.url+"admin/post/reclyempty",
+          type:'post',
+           xhrFields: {
+           withCredentials: true
+       },
+          success:function(res){
+           layer.msg(res.msg)
+          }
+         })
+
+          table.reload('LAY-app-recly-list');
+          layer.close(index);
+      	 })
+      }
+
+    }; 
+
+    $('.layui-btn.layuiadmin-btn-list').on('click', function(){
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+  });
+  </script>

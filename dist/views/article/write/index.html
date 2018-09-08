@@ -1,0 +1,150 @@
+
+<title>写文章</title>
+  
+<div class="layui-fluid">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+      <div class="layui-card">
+        <div class="layui-card-header">写文章</div>
+        <div class="layui-card-body" pad15>
+          
+          <div class="layui-form layui-form-pane" lay-filter="">
+           
+            <div class="layui-form-item">
+                <label class="layui-form-label">文章分类</label>
+                <div class="layui-input-inline icon">
+                  <select  name="cate" id="cate" lay-verify="required">
+                    <option v1alue="1">默认分类</option>
+                    
+  
+                  </select> 
+                </div>
+               
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">文章标题</label>
+              <div class="layui-input-block">
+                <input type="text" name="title" value="" lay-verify="required" autocomplete="off" placeholder="请输入模块名" class="layui-input">
+              </div>
+              
+            </div>
+             <div class="layui-form-item">
+              <label class="layui-form-label">摘要</label>
+              <div class="layui-input-block">
+                <input type="text" name="sub" value="" lay-verify="required" autocomplete="off" placeholder="请输入一句话概括全文内容" class="layui-input">
+              </div>
+              
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">标签</label>
+              <div class="layui-input-block">
+                <input type="text" name="tag" value="" lay-verify="required" autocomplete="off" placeholder="请输入标签，以空格分隔" class="layui-input">
+              </div>
+              
+            </div>
+           
+            <div class="layui-form-item">
+              <label class="layui-form-label">内容</label>
+              <div class="layui-input-block">
+              <textarea style="width: 100%;display: inline-block;" id="myEditor"></textarea>
+              
+              </div>
+             
+              
+            </div>
+            <div class="layui-form-item">
+              <label class="layui-form-label">是否公开</label>
+              <div class="layui-input-blcok">
+                <input type="checkbox" lay-verify="" lay-filter="status" name="status" lay-skin="switch" lay-text="是|否">
+              </div>
+            </div>
+                    
+            
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="publish">发布</button>
+                
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+
+            
+  
+layui.use('set', layui.factory('set'));
+layui.use(['form','layer','jquery','layedit'],function(){
+  var layer=layui.layer,
+  $=layui.jquery,
+  form=layui.form,
+ layedit=layui.layedit;
+ var index= layer.load()
+layedit.set({
+  uploadImage: {
+    url: layui.setter.url+'admin/post/upload_img' //接口url
+    ,type: 'POST' //默认post
+  }
+});
+var edit=layedit.build('myEditor');  
+  
+
+$.ajax({
+    url:layui.setter.url+'admin/post/cate',
+    type:'POST',
+     xhrFields: {
+           withCredentials: true
+       },
+    success:function(res){
+        var str=``;
+        $('#cate').empty();
+        if(res.length>0){
+            res.forEach(item => {
+                str+=`<option value="${item.id}">${item.name}</option>`
+            });
+            $('#cate').append(str)
+           form.render() 
+           layer.close(index)
+        }
+    }
+})
+
+form.on('submit(publish)', function(data){
+    data.field.content=layedit.getContent(edit)
+    data.field.status=data.field.status=="off"?0:1;
+    $.ajax({
+        url:layui.setter.url+'admin/post/save',
+        type:'POST',
+         xhrFields: {
+           withCredentials: true
+       },
+        data:data.field,
+        success:function(res){
+            if(res.code==200){
+                layer.msg(res.msg,function(){
+                    location.reload();
+                })
+
+            }else{
+                layer.msg(res.msg)
+            }
+        }
+    })
+
+    return false;
+  });
+
+
+})
+
+
+
+
+</script>

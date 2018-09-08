@@ -14,7 +14,11 @@
         nickname: function(t, i) {
             return new RegExp("^[a-zA-Z0-9_一-龥\\s·]+$").test(t) ? /(^\_)|(\__)|(\_+$)/.test(t) ? "用户名首尾不能出现下划线'_'" : /^\d+\d+\d$/.test(t) ? "用户名不能全为数字" : void 0 : "用户名不能有特殊字符"
         },
-        pass: [/^[\S]{5,12}$/, "密码必须5到12位，且不能出现空格"],
+        pass:function(value){
+          if(value.length<5||value.length>12){
+            return '密码长度应该介于5~12之间';
+          }
+        },
         repass: function(t) {
             if (t !== i("#LAY_password").val())
                 return "两次密码输入不一致"

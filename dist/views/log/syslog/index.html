@@ -1,0 +1,107 @@
+<title>系统日志</title>
+  
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>日治管理</cite></a>
+    <a><cite>系统日志</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div class=" layui-card-header layuiadmin-card-header-auto" lay-filter="app-content-log">
+     <p>系统日志，主要用来记录后台操作，建议定期清理，可以写一个存储过程，定期执行，用来整理日志</p>
+    </div>
+    <div class="layui-card-body">
+      <div style="padding-bottom: 10px;">
+        <button class="layui-btn layuiadmin-btn-comm" data-type="batchdel">删除</button>
+        <button class="layui-btn layui-btn-danger layuiadmin-btn-comm" data-type="des">清空日志</button>
+
+      </div>
+      <table id="LAY-app-log-comm" lay-filter="LAY-app-log-comm"></table>  
+      <script type="text/html" id="table-content-log">
+        
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+      </script>
+    </div>
+  </div>
+</div>
+
+
+<script>
+layui.use('contlist', layui.factory('contlist')).use(['admin', 'contlist', 'table'], function(){
+  var $ = layui.$
+  ,admin = layui.admin
+  ,view = layui.view
+  ,table = layui.table
+  ,form = layui.form;
+  
+  form.render(null, 'app-content-log');
+  
+ 
+  
+  //点击事件
+  var active = {
+    batchdel: function(){
+      var checkStatus = table.checkStatus('LAY-app-log-comm')
+      ,checkData = checkStatus.data; //得到选中的数据
+
+      if(checkData.length === 0){
+        return layer.msg('请选择数据');
+      }
+    
+      layer.confirm('确定删除吗？', function(index) {
+         var arr=[]
+          checkData.forEach(item=>{
+            arr.push(item.id)
+          })
+
+         $.ajax({
+          url:layui.setter.url+"admin/logs/slogdel",
+          type:'post',
+           xhrFields: {
+           withCredentials: true
+       },
+          data:{
+            id:arr
+          },
+          success:function(res){
+           layer.msg(res.msg)
+          }
+         })
+        //执行 Ajax 后重载
+        /*
+        admin.req({
+          url: 'xxx'
+          //,……
+        });
+        */
+        table.reload('LAY-app-log-comm');
+        
+      });
+    },
+    des:function(){
+    	layer.confirm('确定要清空日志吗？', function(index){
+    		$.ajax({
+    			url:layui.setter.url+'admin/logs/slogempty',
+    			type:'post',
+           xhrFields: {
+           withCredentials: true
+       },
+    			success:function(res){
+    				layer.msg(res.msg)
+    				table.reload('LAY-app-log-comm');
+        			layer.msg('已经清空了');
+    			}
+    		})
+    	})
+    }
+  }  
+
+  $('.layui-btn.layuiadmin-btn-comm').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+});
+</script>

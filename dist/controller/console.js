@@ -147,7 +147,7 @@
            withCredentials: true
        },
             success:function(res){
-
+ 
                 chartdata=res.data;
                 
             }
@@ -188,7 +188,7 @@
             xAxis: [{
                 type: "category",
                 boundaryGap: !1,
-                data: ['10:00','12:00','14:00','16:00','18:00','20:00']
+                data: ['00:00','02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00']
             }],
             yAxis: [{
                 type: "value"
@@ -247,17 +247,20 @@
         layui.table);
         e.render({
             elem: "#LAY-index-topSearch",
-            url: layui.setter.url+"admin/index/testdata2",
+            url: layui.setter.url+"admin/index/newpublish",
             page: !0,
             cols: [[{
-                field: "id",
-                fixed: "left",
-                title:"id",
+                field: "title",
+                title: "标题",
             }, {
-                field: "ques",
-                title: "内容",
-                minWidth: 300,
+                field: "catename",
+                title: "分类",
+                minWidth: 100,
             }, {
+                field: "tag",
+                title: "标签",
+                minWidth: 100,
+            },{
                 field: "create_time",
                 title: "时间",
                 minWidth: 120,
@@ -267,18 +270,28 @@
         }),
         e.render({
             elem: "#LAY-index-topCard",
-            url: layui.setter.url+"admin/index/testdata3",
+            url: layui.setter.url+"admin/index/newcom",
             page: !0,
             cellMinWidth: 120,
-            cols: [[  {
+            cols: [[ {
                 field: "create_time",
                 title:'时间',
                 templet: '<div>{{ layui.util.timeAgo(d.create_time) }}</div>'
+            }, {
+                field: "content",
+                title:'评论内容',
             },{
-                field: "username",
-                title: "信息",
-                minWidth: 300,
-                templet: '<div>用户{{d.username}}注册</div>'
+                field: "ip",
+                title:'IP地址',
+            },{
+                field: "title",
+                title: "评论文章",
+                minWidth: 100,
+                templet: '<div><a href="{{layui.setter.url}}index/index/details.html?id={{d.pid}}">{{ d.title }}</a></div>'
+            },{
+                field: "city",
+                title: "位置",
+                minWidth: 100,
             }
                 ]],
             skin: "line"
